@@ -4,11 +4,26 @@ from matrix import *
 
 def add_circle( points, cx, cy, cz, r, step ):
     t = 0
-    while(t <= 
+    x0 = cx
+    y0 = cy
+    while(t <= step):
+       theta = 2 * math.pi * t
+       x = r * math.cos(t)
+       y = r * math.sin(t)
+       nx = cx + x
+       ny = cy + y
+       add_edge(points, x0, y0, 0, nx, ny, 0)
+       t = t + 1
 
 def add_curve( points, x0, y0, x1, y1, x2, y2, x3, y3, step, curve_type ):
-    pass
+    if(curve_type = "hermite"):
+        coefs = generate_curve_coefs(x0, x1, x2, x3, "hermite")
+        coefs = generate_curve_coefs(y0, y1, y2, y3, "hermite")
+    else:
+        coefs = generate_curve_coefs(x0, x1, x2, x3, "bezier")
+        coefs = generate_curve_coefs(y0, y1, y2, y3, "bezier")
 
+    matrix_mult(coefs, points)
 
 def draw_lines( matrix, screen, color ):
     if len(matrix) < 2:
@@ -21,16 +36,16 @@ def draw_lines( matrix, screen, color ):
                    int(matrix[point][1]),
                    int(matrix[point+1][0]),
                    int(matrix[point+1][1]),
-                   screen, color)    
+                   screen, color)
         point+= 2
-        
+
 def add_edge( matrix, x0, y0, z0, x1, y1, z1 ):
     add_point(matrix, x0, y0, z0)
     add_point(matrix, x1, y1, z1)
-    
+
 def add_point( matrix, x, y, z=0 ):
     matrix.append( [x, y, z, 1] )
-    
+
 
 
 
@@ -54,7 +69,7 @@ def draw_line( x0, y0, x1, y1, screen, color ):
     if ( abs(x1-x0) >= abs(y1 - y0) ):
 
         #octant 1
-        if A > 0:            
+        if A > 0:
             d = A + B/2
 
             while x < x1:
