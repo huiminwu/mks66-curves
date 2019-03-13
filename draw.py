@@ -3,27 +3,34 @@ from matrix import *
 
 
 def add_circle( points, cx, cy, cz, r, step ):
-    t = 0
-    x0 = cx
-    y0 = cy
-    while(t <= step):
-       theta = 2 * math.pi * t
-       x = r * math.cos(t)
-       y = r * math.sin(t)
-       nx = cx + x
-       ny = cy + y
-       add_edge(points, x0, y0, 0, nx, ny, 0)
-       t = t + 1
+    theta = 0
+    sect = 2 * math.pi * step
+    x0 = r * math.cos(theta) + cx
+    y0 = r * math.sin(theta) + cy
+    while(theta <= 1):
+        theta = theta + sect
+        x1 = r * math.cos(theta) + cx
+        y1 = r * math.sin(theta) + cy
+        add_edge(points, x0, y0, 0, x1, y1, 0)
+        x1 = x0
+        y1 = y0
 
 def add_curve( points, x0, y0, x1, y1, x2, y2, x3, y3, step, curve_type ):
-    if(curve_type = "hermite"):
-        coefs = generate_curve_coefs(x0, x1, x2, x3, "hermite")
-        coefs = generate_curve_coefs(y0, y1, y2, y3, "hermite")
-    else:
-        coefs = generate_curve_coefs(x0, x1, x2, x3, "bezier")
-        coefs = generate_curve_coefs(y0, y1, y2, y3, "bezier")
+    t = 0
+    xcoefs = generate_curve_coefs(x0, x1, x2, x3, curve_type)
+    ycoefs = generate_curve_coefs(y0, y1, y2, y3, curve_type)
+    print_matrix(xcoefs)
+    print_matrix(ycoefs)
+    x0 = xcoefs[0][0] * t ** 3 + xcoefs[0][1] * t ** 2 + xcoefs[0][2] * t + xcoefs[0][3]
+    y0 = ycoefs[0][0] * t ** 3 + ycoefs[0][1] * t ** 2 + ycoefs[0][2] * t + ycoefs[0][3]
+    while(t <= 1):
+        t = t + step
+        x1 = xcoefs[0][0] * t ** 3 + xcoefs[0][1] * t ** 2 + xcoefs[0][2] * t + xcoefs[0][3]
+        y1 = ycoefs[0][0] * t ** 3 + ycoefs[0][1] * t ** 2 + ycoefs[0][2] * t + ycoefs[0][3]
+        add_edge(points, x0, y0, 0, x1, y1, 0)
+        x0 = x1
+        y0 = y0
 
-    matrix_mult(coefs, points)
 
 def draw_lines( matrix, screen, color ):
     if len(matrix) < 2:

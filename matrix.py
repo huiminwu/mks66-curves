@@ -18,10 +18,11 @@ def make_hermite():
 def generate_curve_coefs( p0, p1, p2, p3, t ):
     if (t == "bezier"):
         c = make_bezier()
-    else:
+    elif (t == "hermite"):
         c = make_hermite()
     points = [[p0, p1, p2, p3]]
-    return matrix_mult(c, points)
+    matrix_mult(c, points)
+    return points
 
 def make_translate( x, y, z ):
     t = new_matrix()
@@ -75,7 +76,7 @@ def print_matrix( matrix ):
             s+= str(matrix[c][r]) + ' '
         s+= '\n'
     print s
-    
+
 #turn the paramter matrix into an identity matrix
 #you may assume matrix is square
 def ident( matrix ):
